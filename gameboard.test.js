@@ -29,8 +29,11 @@ describe('Gameboard functions', () => {
 
   it('positions a ship on the x-axis', () => {
     const testCarrier = new Ship('Carrier', 5);
+    const testSub = Gameboard.ships.submarine;
     testBoard.placeShip(testCarrier, 91);
+    testBoard.placeShip(testSub, 7);
     expect(testCarrier.position).toStrictEqual([91, 92, 93, 94, 95]);
+    expect(testSub.position).toStrictEqual([7, 8, 9]);
   });
 
   it('does not misposition a ship', () => {
@@ -47,7 +50,20 @@ describe('Gameboard functions', () => {
     expect(testCarrier.position).toStrictEqual([11, 21, 31, 41, 51]);
   });
 
-  it.skip('refuses to place ships where boundaries occur', () => {
-
+  it('refuses to place ships where boundaries occur', () => {
+    const testCarrier = Gameboard.ships.carrier;
+    testBoard.placeShip(testCarrier, 9);
+    expect(testCarrier.position).not.toBeDefined;
+    testBoard.placeShip(testCarrier, 71);
+    expect(testCarrier.position).not.toBeDefined;
   });
+
+  it('delivers a hit when a ship is hit', () => {
+    const testCarrier = Gameboard.ships.carrier;
+    testBoard.placeShip(testCarrier, 3);
+    testBoard.hitCell(7);
+    expect(testBoard.board[7].beenHit).toBe(true);
+    expect(testCarrier.hits).toBe(1);
+  });
+
 });

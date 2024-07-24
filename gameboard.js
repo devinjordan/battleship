@@ -30,16 +30,24 @@ export default class Gameboard {
       return false;
     }
     this.board[cell].beenHit = true;
+
+    // TODO: Find the ship on the cell and hit()
   }
 
   placeShip(ship, cell, xAxis = true) {
     let positionArr = [];
     for (let i = 0; i < ship.size; i++) {
       if (xAxis) {
+        if (positionArr[i - 1] % 10 == 9) {
+          return;
+        }
         positionArr.push(cell + i);
         this.board[cell + i].hasShip = true;
   
       } else {
+        if (cell + i * 10 >= 100) {
+          return;
+        }
         positionArr.push(cell + i * 10);
         this.board[cell + i * 10].hasShip = true;
       }
