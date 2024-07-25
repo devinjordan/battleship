@@ -16,6 +16,8 @@ export default class Gameboard {
     patrolBoat: new Ship('Patrol Boat', 2),
   }
 
+  ships = [];
+
   initialize() {
     for (let i = 0; i < 100; i++) {
       this.board.push({
@@ -29,9 +31,11 @@ export default class Gameboard {
     if (this.board[cell].beenHit) {
       return false;
     }
+    if (this.board[cell].hasShip) {
+      this.board[cell].hasShip.hit();
+      this.board[cell].hasShip.isSunk();
+    }
     this.board[cell].beenHit = true;
-
-    // TODO: Find the ship on the cell and hit()
   }
 
   placeShip(ship, cell, xAxis = true) {
@@ -39,19 +43,45 @@ export default class Gameboard {
     for (let i = 0; i < ship.size; i++) {
       if (xAxis) {
         if (positionArr[i - 1] % 10 == 9) {
-          return;
+          return false;
+        }
+        if (this.board[cell + i].hasShip) {
+          return false;
         }
         positionArr.push(cell + i);
-        this.board[cell + i].hasShip = true;
+        this.board[cell + i].hasShip = ship;
   
       } else {
         if (cell + i * 10 >= 100) {
-          return;
+          return false;
+        }
+        if (this.board[cell + i * 10].hasShip) {
+          return false;
         }
         positionArr.push(cell + i * 10);
-        this.board[cell + i * 10].hasShip = true;
+        this.board[cell + i * 10].hasShip = ship;
       }
     };
     ship.position = positionArr;
+  }
+
+  setShips(ships = Gameboard.ships) {
+    for (let ship in ships) {
+      do {
+        let cell = prompt('Starting Cell: ');
+        let axis = prompt('Axis: ');
+        this.placeShip(ship, cell, axis);
+      } while (!ship.position);
+      this.ships.push(ship);
+    }
+  }
+
+  allShipsSunk(ships) {
+    for (let i = 0; i < ships.length; i++) {
+      if (ships[i].sunk == false) {
+        return false;
+      }
+    }
+    return true;
   }
 }

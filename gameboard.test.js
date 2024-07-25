@@ -24,7 +24,7 @@ describe('Gameboard functions', () => {
   it('can hold a ship', () => {
     const testCarrier = new Ship('Carrier', 5);
     testBoard.placeShip(testCarrier, 91);
-    expect(testBoard.board[91].hasShip).toBe(true);
+    expect(testBoard.board[91].hasShip.name).toBe('Carrier');
   });
 
   it('positions a ship on the x-axis', () => {
@@ -58,12 +58,56 @@ describe('Gameboard functions', () => {
     expect(testCarrier.position).not.toBeDefined;
   });
 
-  it('delivers a hit when a ship is hit', () => {
+  it('delivers a hit to a ship when struck', () => {
     const testCarrier = Gameboard.ships.carrier;
     testBoard.placeShip(testCarrier, 3);
     testBoard.hitCell(7);
     expect(testBoard.board[7].beenHit).toBe(true);
     expect(testCarrier.hits).toBe(1);
+  });
+
+  it('sinks a ship after enough hits', () => {
+    const testDestroyer = Gameboard.ships.destroyer;
+    testBoard.placeShip(testDestroyer, 12, false);
+    expect(testDestroyer.sunk).toBe(false);
+    testBoard.hitCell(12);
+    testBoard.hitCell(22);
+    testBoard.hitCell(32);
+    expect(testDestroyer.sunk).toBe(true);
+  });
+
+  it('cannot place ships on top of each other', () => {
+    const carrier = Gameboard.ships.carrier;
+    const submarine = Gameboard.ships.submarine;
+    testBoard.placeShip(carrier, 57, false);
+    testBoard.placeShip(submarine, 56);
+    expect(carrier.position).toStrictEqual([57, 67, 77, 87, 97]);
+    expect(submarine.position).not.toBeDefined;
+  });
+
+  it('knows when all ships are sunk', () => {
+    const carrier = Gameboard.ships.carrier;
+    const battleship = Gameboard.ships.battleship;
+    const destroyer = Gameboard.ships.destroyer;
+    const submarine = Gameboard.ships.submarine;
+    const patrolBoat = Gameboard.ships.patrolBoat;
+
+    testBoard.placeShip(carrier, 47);
+    testBoard.placeShip(battleship, 57);
+    testBoard.placeShip(destroyer, 1, false);
+    testBoard.placeShip(submarine, 2, false);
+    testBoard.placeShip(patrolBoat, 97);
+
+    const ships = [carrier, battleship, destroyer, submarine, patrolBoat];
+    expect(testBoard.allShipsSunk(ships)).toBe(false);
+
+    carrier.sunk = true;
+    battleship.sunk = true;
+    destroyer.sunk = true;
+    submarine.sunk = true;
+    patrolBoat.sunk = true;
+
+    expect(testBoard.allShipsSunk(ships)).toBe(true);
   });
 
 });
