@@ -1,4 +1,4 @@
-import Ship from "./ship.js";
+import Ship from "../modules/ship";
 
 describe('hits and sinks', () => {
   const ships = {
