@@ -16,7 +16,7 @@ export default class Gameboard {
     patrolBoat: new Ship('Patrol Boat', 2),
   }
 
-  ships = [];
+  occupiedSpaces = [];
 
   initialize() {
     for (let i = 0; i < 100; i++) {
