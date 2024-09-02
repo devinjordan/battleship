@@ -60,7 +60,9 @@ const opponentBoardSetup = function() {
     } else {
       axis = true;
     }
-    opponent.board.placeShip(opponent.ships[i], Math.floor(Math.random() * 100), axis);
+    do {
+      opponent.board.placeShip(opponent.ships[i], Math.floor(Math.random() * 100), axis);
+    } while (opponent.ships[i].position == null);
     for (let j = 0; j < opponent.ships[i].position.length; j++) {
       opponent.board.occupiedSpaces.push(opponent.ships[i].position[j]);
     };
@@ -73,10 +75,12 @@ const opponentBoardSetup = function() {
     // }
   };
 
+  console.log(opponent.board.occupiedSpaces);
+
   for (let i = 0; i < opponent.board.board.length; i++) {
     if (i % 10 == 0) {
       const nextLine = document.createElement('div');
-      playerBoard.appendChild(nextLine);
+      opponentBoard.appendChild(nextLine);
     };
 
     const cell = document.createElement('button');
@@ -90,3 +94,4 @@ const opponentBoardSetup = function() {
 }
 
 playerBoardSetup();
+opponentBoardSetup();

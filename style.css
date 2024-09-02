@@ -1,9 +1,9 @@
 .cell {
-  margin: 0 .1vw;
+  margin: 0;
   padding: 0;
   background-color: white;
-  height: 5vh;
-  width: 5vh;
+  /* height: 5vh;
+  width: 5vh; */
 }
 
 .cell:hover {
@@ -16,4 +16,11 @@
 
 .ship {
   background: gray;
+}
+
+#player-board > div {
+  display: grid;
+  grid-template-columns: repeat(11, 5vh);
+  grid-template-rows: repeat(11, 5vh);
+  column-gap: 0;
 }
