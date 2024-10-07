@@ -6,6 +6,7 @@ export default class Gameboard {
     if (!this.board.length) {
       this.initialize();
     }
+    this.shipPositions = {};
   }
 
   static ships = {
@@ -32,8 +33,7 @@ export default class Gameboard {
       return false;
     }
     if (this.board[cell].hasShip) {
-      this.board[cell].hasShip.hit();
-      this.board[cell].hasShip.isSunk();
+      this.shipPositions[cell].hit();
     }
     this.board[cell].beenHit = true;
   }
@@ -51,7 +51,8 @@ export default class Gameboard {
           return false;
         }
         positionArr.push(cell + i);
-        this.board[cell + i].hasShip = ship;
+        this.board[cell + i].hasShip = true;
+        this.shipPositions[cell + i] = ship; // Maps cell to ship
   
       } else {
         if (cell + i * 10 >= 100) {
@@ -61,7 +62,8 @@ export default class Gameboard {
           return false;
         }
         positionArr.push(cell + i * 10);
-        this.board[cell + i * 10].hasShip = ship;
+        this.board[cell + i * 10].hasShip = true;
+        this.shipPositions[cell + i * 10] = ship; // Maps cell to ship
       }
     };
 

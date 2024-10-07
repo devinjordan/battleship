@@ -102,19 +102,20 @@ const opponentBoardSetup = function() {
     cell.dataset.index = i;
 
     cell.addEventListener('click', () => {
-      if (opponent.board.board[i].beenHit) {
-        console.log('you already shot here');
-        return;
-      }
-      if (opponent.board.board[i].hasShip) {
-        cell.classList.add('hit');
-        opponent.board.board[i].hasShip.hit();
-        console.log(`You hit your opponent's ${opponent.board.board[i].hasShip.name}. Total hits: ${opponent.board.board[i].hasShip.hits}`);
-      } else {
-        console.log('miss');
-        cell.classList.add('miss');
-      }
-      opponent.board.board[i].beenHit = true;
+      opponent.board.hitCell(i);
+      // if (opponent.board.board[i].beenHit) {
+      //   console.log('you already shot here');
+      //   return;
+      // }
+      // if (opponent.board.board[i].hasShip) {
+      //   cell.classList.add('hit');
+      //   opponent.board.board[i].hasShip.hit();
+      //   console.log(`You hit your opponent's ${opponent.board.board[i].hasShip.name}. Total hits: ${opponent.board.board[i].hasShip.hits}`);
+      // } else {
+      //   console.log('miss');
+      //   cell.classList.add('miss');
+      // }
+      // opponent.board.board[i].beenHit = true;
 
       // opponent's turn
       let randomCell;
