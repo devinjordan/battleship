@@ -34,7 +34,7 @@ const playerBoardSetup = async function() {
         for (let i = 0; i < player.ships[playerShipsDown].position.length; i++) {
           const shipCell = playerDiv.querySelector(`.cell[data-index='${player.ships[playerShipsDown].position[i]}']`);
           shipCell.classList.add('ship');
-          shipCell.disabled = true;
+          // shipCell.disabled = true;
           player.board.occupiedSpaces.push(player.ships[playerShipsDown].position[i]);
         }
         playerShipsDown++;
@@ -61,17 +61,23 @@ const opponentBoardSetup = function() {
     do {
       opponent.board.placeShip(opponent.ships[i], Math.floor(Math.random() * 100), axis);
     } while (opponent.ships[i].position == null);
-    for (let j = 0; j < opponent.ships[i].position.length; j++) {
-      opponent.board.occupiedSpaces.push(opponent.ships[i].position[j]);
-    };
-    // ensure ship is not being placed on top of another
-    // for (let j = 0; j < opponent.ships[i].position.length; j++) {
-    //   if (occupiedSpaces.includes(opponent.ships[i].position[j])) {
-    //     opponent.ships[i].position = [];
-    //     i--;
-    //   }
-    // }
   };
+
+  opponent.ships.forEach(ship => {
+    opponent.board.occupiedSpaces.push(...ship.position)
+  });
+
+  (function testBoard() {
+    let testSpaces = [];
+    opponent.board.occupiedSpaces.forEach(space => {
+      if (testSpaces.includes(space)) {
+        console.log('duplicate');
+      } else {
+        testSpaces.push(space);
+      }
+    });
+    console.log('no duplicates');  
+  })();
 
   console.log(opponent.board.occupiedSpaces);
   opponent.ships.forEach(ship => {
@@ -110,15 +116,12 @@ const opponentBoardSetup = function() {
 
       // opponent's turn
       let randomCell;
-
-      let opponentShotsLog = [];
+      console.log(randomCell);
 
       do {
         randomCell = Math.floor(Math.random() * 100);
       } while (player.board.board[randomCell].beenHit);
       
-      opponentShotsLog.push(randomCell);
-
       if (player.board.board[randomCell].hasShip) {
         console.log('opponent hit');
         const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
