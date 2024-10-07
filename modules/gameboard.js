@@ -34,8 +34,10 @@ export default class Gameboard {
     }
     if (this.board[cell].hasShip) {
       this.shipPositions[cell].hit();
+      return true;
     }
     this.board[cell].beenHit = true;
+    return false;
   }
 
   placeShip(ship, cell, xAxis = true) {
@@ -44,10 +46,12 @@ export default class Gameboard {
       if (xAxis) {
         // checking for wrap arounds
         if (positionArr[i - 1] % 10 == 9) {
+          console.log(`Bad placement. ${positionArr}`);
           return false;
         }
         // check if the cell has a ship
         if (this.board[cell + i].hasShip) {
+          console.log(`Bad placement. ${positionArr}`);
           return false;
         }
         positionArr.push(cell + i);
@@ -56,9 +60,11 @@ export default class Gameboard {
   
       } else {
         if (cell + i * 10 >= 100) {
+          console.log(`Bad placement. ${positionArr}`);
           return false;
         }
         if (this.board[cell + i * 10].hasShip) {
+          console.log(`Bad placement. ${positionArr}`);
           return false;
         }
         positionArr.push(cell + i * 10);
@@ -66,6 +72,8 @@ export default class Gameboard {
         this.shipPositions[cell + i * 10] = ship; // Maps cell to ship
       }
     };
+
+    console.log(`placed ${ship.name} at ${positionArr}`);
 
     // double check full position
     positionArr.forEach(cell => {

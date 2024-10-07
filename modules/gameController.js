@@ -27,6 +27,7 @@ const playerBoardSetup = async function() {
       const cell = document.createElement('button');
       cell.classList.add('cell');
       cell.dataset.index = i;
+      cell.textContent = i;
 
       cell.addEventListener('click', function handleClick() {
         if (playerShipsDown >= 5) {
@@ -38,16 +39,21 @@ const playerBoardSetup = async function() {
         for (let i = 0; i < player.ships[playerShipsDown].position.length; i++) {
           const shipCell = playerDiv.querySelector(`.cell[data-index='${player.ships[playerShipsDown].position[i]}']`);
           shipCell.classList.add('ship');
-          // shipCell.disabled = true;
-          player.board.occupiedSpaces.push(player.ships[playerShipsDown].position[i]);
         }
         playerShipsDown++;
-        if (playerShipsDown === 5) resolve();
+        if (playerShipsDown === 5) {
+          resolve();
+          player.ships.forEach(ship => {
+            console.log(ship.name);
+            console.log(ship.position);
+          });
+        }
       });
       // TODO: add hover effect to show ship placement
       playerBoard.appendChild(cell);
     };
     playerDiv.appendChild(playerBoard);
+    
   });
 };
 
@@ -62,9 +68,12 @@ const opponentBoardSetup = function() {
     } else {
       axis = true;
     }
+
+    let placed = false;
     do {
-      opponent.board.placeShip(opponent.ships[i], Math.floor(Math.random() * 100), axis);
-    } while (opponent.ships[i].position == null || opponent.ships[i].position.length < opponent.ships[i].size);
+      const position = Math.floor(Math.random() * 100);
+      placed = opponent.board.placeShip(opponent.ships[i], position, axis);
+    } while (placed == false);
   };
 
   opponent.ships.forEach(ship => {
@@ -83,7 +92,6 @@ const opponentBoardSetup = function() {
     console.log('no duplicates');  
   })();
 
-  console.log(opponent.board.occupiedSpaces);
   opponent.ships.forEach(ship => {
     console.log(ship.name);
     console.log(ship.position);
@@ -102,41 +110,25 @@ const opponentBoardSetup = function() {
     cell.dataset.index = i;
 
     cell.addEventListener('click', () => {
-      opponent.board.hitCell(i);
-      // if (opponent.board.board[i].beenHit) {
-      //   console.log('you already shot here');
-      //   return;
-      // }
-      // if (opponent.board.board[i].hasShip) {
-      //   cell.classList.add('hit');
-      //   opponent.board.board[i].hasShip.hit();
-      //   console.log(`You hit your opponent's ${opponent.board.board[i].hasShip.name}. Total hits: ${opponent.board.board[i].hasShip.hits}`);
-      // } else {
-      //   console.log('miss');
-      //   cell.classList.add('miss');
-      // }
-      // opponent.board.board[i].beenHit = true;
+      if (opponent.board.hitCell(i)) {
+        cell.classList.add('hit');
+      } else {
+        cell.classList.add('miss');
+      }
 
-      // opponent's turn
+      // opponents turn
       let randomCell;
 
       do {
         randomCell = Math.floor(Math.random() * 100);
       } while (player.board.board[randomCell].beenHit);
 
-      console.log(randomCell)
-      
-      if (player.board.board[randomCell].hasShip) {
-        console.log('opponent hit');
-        const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
-        cell.classList.add('hit');
-        player.board.board[randomCell].hasShip.hit();
+      if (player.board.hitCell(randomCell)) {
+        playerDiv.querySelector(`.cell[data-index='${randomCell}']`).classList.add('hit');
       } else {
-        console.log('opponent miss');
-        const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
-        cell.classList.add('miss');
-      }
-
+        playerDiv.querySelector(`.cell[data-index='${randomCell}']`).classList.add('miss');
+      };
+      
       // TODO: check if game is over
 
     });

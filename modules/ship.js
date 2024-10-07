@@ -12,6 +12,7 @@ export default class Ship {
       return;
     }
     this.hits++;
+    console.log(`${this.name} has been hit! Total hits: ${this.hits}`);
     this.isSunk();
   }
 
