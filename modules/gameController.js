@@ -9,13 +9,16 @@ const opponent = new Player();
 const playerBoardSetup = async function() {
   return new Promise((resolve) => {
     const playerBoard = document.createElement('div');
+
     let axis = true;
     const axisBtn = document.querySelector('#rotate-axis');
     axisBtn.addEventListener('click', () => {
       if (axis === true) axis = false;
       else axis = true;
     });
+
     let playerShipsDown = 0;
+
     for (let i = 0; i < player.board.board.length; i++) {
       if (i % 10 == 0) {
         const nextLine = document.createElement('div');
@@ -24,6 +27,7 @@ const playerBoardSetup = async function() {
       const cell = document.createElement('button');
       cell.classList.add('cell');
       cell.dataset.index = i;
+
       cell.addEventListener('click', function handleClick() {
         if (playerShipsDown >= 5) {
           const newBoard = playerBoard.cloneNode(true);
@@ -60,11 +64,11 @@ const opponentBoardSetup = function() {
     }
     do {
       opponent.board.placeShip(opponent.ships[i], Math.floor(Math.random() * 100), axis);
-    } while (opponent.ships[i].position == null);
+    } while (opponent.ships[i].position == null || opponent.ships[i].position.length < opponent.ships[i].size);
   };
 
   opponent.ships.forEach(ship => {
-    opponent.board.occupiedSpaces.push(...ship.position)
+    opponent.board.occupiedSpaces.push(...ship.position);
   });
 
   (function testBoard() {
@@ -103,9 +107,9 @@ const opponentBoardSetup = function() {
         return;
       }
       if (opponent.board.board[i].hasShip) {
-        console.log(`You hit your opponent's ${opponent.board.board[i].hasShip.name} Hits: ${opponent.board.board[i].hasShip.hits}`);
         cell.classList.add('hit');
         opponent.board.board[i].hasShip.hit();
+        console.log(`You hit your opponent's ${opponent.board.board[i].hasShip.name}. Total hits: ${opponent.board.board[i].hasShip.hits}`);
       } else {
         console.log('miss');
         cell.classList.add('miss');
