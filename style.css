@@ -18,9 +18,26 @@
   background: gray;
 }
 
-#player-board > div {
+#player-board > div, #opponent-board > div {
   display: grid;
   grid-template-columns: repeat(11, 5vh);
   grid-template-rows: repeat(11, 5vh);
   column-gap: 0;
+}
+
+.miss {
+  background: lightblue;
+}
+
+.hit {
+  background: red;
+}
+
+.sunk {
+  background: darkred;
+}
+
+main {
+  display: flex;
+  align-items: center;
 }

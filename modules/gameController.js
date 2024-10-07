@@ -10,9 +10,7 @@ const playerBoardSetup = function() {
   const playerBoard = document.createElement('div');
 
   let axis = true;
-  const axisBtn = document.createElement('button');
-  axisBtn.id = 'axis-btn';
-  axisBtn.textContent = 'Rotate Axis'
+  const axisBtn = document.querySelector('#rotate-axis');
   axisBtn.addEventListener('click', () => {
     if (axis === true) axis = false;
     else axis = true;
@@ -44,6 +42,9 @@ const playerBoardSetup = function() {
       }
       playerShipsDown++;
     });
+
+    // TODO: add hover effect to show ship placement
+
     playerBoard.appendChild(cell);
   };
   playerDiv.appendChild(playerBoard);
@@ -76,6 +77,11 @@ const opponentBoardSetup = function() {
   };
 
   console.log(opponent.board.occupiedSpaces);
+  opponent.ships.forEach(ship => {
+    console.log(ship.name);
+    console.log(ship.position);
+  });
+
 
   for (let i = 0; i < opponent.board.board.length; i++) {
     if (i % 10 == 0) {
@@ -88,9 +94,47 @@ const opponentBoardSetup = function() {
     cell.dataset.index = i;
 
     cell.addEventListener('click', () => {
+      if (opponent.board.board[i].beenHit) {
+        console.log('you already shot here');
+        return;
+      }
+      if (opponent.board.board[i].hasShip) {
+        console.log('hit');
+        cell.classList.add('hit');
+        opponent.board.board[i].hasShip.hit();
+        if (opponent.board.board[i].hasShip.isSunk()) {
+          console.log(`You sank your opponent's ${opponent.board.board[i].hasShip.name}!`);
+        }
+      } else {
+        console.log('miss');
+        cell.classList.add('miss');
+      }
+      opponent.board.board[i].beenHit = true;
 
+      // opponent's turn
+      let randomCell;
+      do {
+        randomCell = Math.floor(Math.random() * 100);
+      } while (player.board.board[randomCell].beenHit);
+      console.log(randomCell);
+      if (player.board.board[randomCell].hasShip) {
+        console.log('opponent hit');
+        const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
+        cell.classList.add('hit');
+        player.board.board[randomCell].hasShip.hit();
+        if (player.board.board[randomCell].hasShip.isSunk()) {
+          console.log(`Your ${player.board.board[randomCell].hasShip.name} has been sunk!`);
+        }
+      } else {
+        console.log('opponent miss');
+        const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
+        cell.classList.add('miss');
+      }
     })
+    opponentBoard.appendChild(cell);
   }
+
+  opponentDiv.appendChild(opponentBoard);
 }
 
 playerBoardSetup();
