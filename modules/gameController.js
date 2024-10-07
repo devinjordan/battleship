@@ -93,6 +93,7 @@ const opponentBoardSetup = function() {
     };
 
     const cell = document.createElement('button');
+    cell.textContent = i;
     cell.classList.add('cell');
     cell.dataset.index = i;
 
@@ -102,12 +103,9 @@ const opponentBoardSetup = function() {
         return;
       }
       if (opponent.board.board[i].hasShip) {
-        console.log('hit');
+        console.log(`You hit your opponent's ${opponent.board.board[i].hasShip.name} Hits: ${opponent.board.board[i].hasShip.hits}`);
         cell.classList.add('hit');
         opponent.board.board[i].hasShip.hit();
-        if (opponent.board.board[i].hasShip.isSunk()) {
-          console.log(`You sank your opponent's ${opponent.board.board[i].hasShip.name}!`);
-        }
       } else {
         console.log('miss');
         cell.classList.add('miss');
@@ -116,42 +114,27 @@ const opponentBoardSetup = function() {
 
       // opponent's turn
       let randomCell;
-      console.log(randomCell);
 
       do {
         randomCell = Math.floor(Math.random() * 100);
       } while (player.board.board[randomCell].beenHit);
+
+      console.log(randomCell)
       
       if (player.board.board[randomCell].hasShip) {
         console.log('opponent hit');
         const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
         cell.classList.add('hit');
         player.board.board[randomCell].hasShip.hit();
-        if (player.board.board[randomCell].hasShip.isSunk()) {
-          console.log(`Your ${player.board.board[randomCell].hasShip.name} has been sunk!`);
-        }
       } else {
         console.log('opponent miss');
         const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
         cell.classList.add('miss');
       }
 
-      // check if game is over
-      let playerShipsRemaining = 0;
-      let opponentShipsRemaining = 0;
-      player.ships.forEach(ship => {
-        if (!ship.isSunk()) playerShipsRemaining++;
-      });
-      opponent.ships.forEach(ship => {
-        if (!ship.isSunk()) opponentShipsRemaining++;
-      });
-      if (playerShipsRemaining == 0) {
-        console.log('Game over! You lose!');
-      } else if (opponentShipsRemaining == 0) {
-        console.log('Game over! You win!');
-      };
+      // TODO: check if game is over
 
-    })
+    });
     opponentBoard.appendChild(cell);
   }
 

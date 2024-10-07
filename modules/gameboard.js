@@ -42,9 +42,11 @@ export default class Gameboard {
     let positionArr = [];
     for (let i = 0; i < ship.size; i++) {
       if (xAxis) {
+        // checking for wrap arounds
         if (positionArr[i - 1] % 10 == 9) {
           return false;
         }
+        // check if the cell has a ship
         if (this.board[cell + i].hasShip) {
           return false;
         }
@@ -62,6 +64,13 @@ export default class Gameboard {
         this.board[cell + i * 10].hasShip = ship;
       }
     };
+
+    // double check full position
+    positionArr.forEach(cell => {
+      if (this.occupiedSpaces.includes(cell)) {
+        return false;
+      }  
+    });
     ship.position = positionArr;
   }
 

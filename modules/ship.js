@@ -8,7 +8,7 @@ export default class Ship {
   }
 
   hit() {
-    if (this.sunk == true) {
+    if (this.sunk) {
       return;
     }
     this.hits++;
@@ -18,6 +18,7 @@ export default class Ship {
   isSunk() {
     if (this.hits == this.size) {
       this.sunk = true;
+      console.log(`${this.name} has been sunk!`);
     }
     return this.sunk;
   }
