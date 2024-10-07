@@ -37,7 +37,7 @@
   background: darkred;
 }
 
-main {
+#boards {
   display: flex;
   align-items: center;
 }

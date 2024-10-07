@@ -6,48 +6,45 @@ const opponentDiv = document.getElementById('opponent-board');
 const player = new Player();
 const opponent = new Player();
 
-const playerBoardSetup = function() {
-  const playerBoard = document.createElement('div');
-
-  let axis = true;
-  const axisBtn = document.querySelector('#rotate-axis');
-  axisBtn.addEventListener('click', () => {
-    if (axis === true) axis = false;
-    else axis = true;
-  });
-  playerDiv.appendChild(axisBtn);
-
-  let playerShipsDown = 0;
-
-  for (let i = 0; i < player.board.board.length; i++) {
-    if (i % 10 == 0) {
-      const nextLine = document.createElement('div');
-      playerBoard.appendChild(nextLine);
-    }
-    const cell = document.createElement('button');
-    cell.classList.add('cell');
-    cell.dataset.index = i;
-    cell.addEventListener('click', function handleClick() {
-      if (playerShipsDown >= 5) {
-        const newBoard = playerBoard.cloneNode(true);
-        playerBoard.parentNode.replaceChild(newBoard, playerBoard);
-        return;
-      };
-      if (player.board.placeShip(player.ships[playerShipsDown], i, axis) == false) return;
-      for (let i = 0; i < player.ships[playerShipsDown].position.length; i++) {
-        const shipCell = playerDiv.querySelector(`.cell[data-index='${player.ships[playerShipsDown].position[i]}']`);
-        shipCell.classList.add('ship');
-        shipCell.disabled = true;
-        player.board.occupiedSpaces.push(player.ships[playerShipsDown].position[i]);
-      }
-      playerShipsDown++;
+const playerBoardSetup = async function() {
+  return new Promise((resolve) => {
+    const playerBoard = document.createElement('div');
+    let axis = true;
+    const axisBtn = document.querySelector('#rotate-axis');
+    axisBtn.addEventListener('click', () => {
+      if (axis === true) axis = false;
+      else axis = true;
     });
-
-    // TODO: add hover effect to show ship placement
-
-    playerBoard.appendChild(cell);
-  };
-  playerDiv.appendChild(playerBoard);
+    let playerShipsDown = 0;
+    for (let i = 0; i < player.board.board.length; i++) {
+      if (i % 10 == 0) {
+        const nextLine = document.createElement('div');
+        playerBoard.appendChild(nextLine);
+      }
+      const cell = document.createElement('button');
+      cell.classList.add('cell');
+      cell.dataset.index = i;
+      cell.addEventListener('click', function handleClick() {
+        if (playerShipsDown >= 5) {
+          const newBoard = playerBoard.cloneNode(true);
+          playerBoard.parentNode.replaceChild(newBoard, playerBoard);
+          return;
+        };
+        if (player.board.placeShip(player.ships[playerShipsDown], i, axis) == false) return;
+        for (let i = 0; i < player.ships[playerShipsDown].position.length; i++) {
+          const shipCell = playerDiv.querySelector(`.cell[data-index='${player.ships[playerShipsDown].position[i]}']`);
+          shipCell.classList.add('ship');
+          shipCell.disabled = true;
+          player.board.occupiedSpaces.push(player.ships[playerShipsDown].position[i]);
+        }
+        playerShipsDown++;
+        if (playerShipsDown === 5) resolve();
+      });
+      // TODO: add hover effect to show ship placement
+      playerBoard.appendChild(cell);
+    };
+    playerDiv.appendChild(playerBoard);
+  });
 };
 
 const opponentBoardSetup = function() {
@@ -113,10 +110,15 @@ const opponentBoardSetup = function() {
 
       // opponent's turn
       let randomCell;
+
+      let opponentShotsLog = [];
+
       do {
         randomCell = Math.floor(Math.random() * 100);
       } while (player.board.board[randomCell].beenHit);
-      console.log(randomCell);
+      
+      opponentShotsLog.push(randomCell);
+
       if (player.board.board[randomCell].hasShip) {
         console.log('opponent hit');
         const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
@@ -130,6 +132,22 @@ const opponentBoardSetup = function() {
         const cell = document.querySelector(`.cell[data-index='${randomCell}']`);
         cell.classList.add('miss');
       }
+
+      // check if game is over
+      let playerShipsRemaining = 0;
+      let opponentShipsRemaining = 0;
+      player.ships.forEach(ship => {
+        if (!ship.isSunk()) playerShipsRemaining++;
+      });
+      opponent.ships.forEach(ship => {
+        if (!ship.isSunk()) opponentShipsRemaining++;
+      });
+      if (playerShipsRemaining == 0) {
+        console.log('Game over! You lose!');
+      } else if (opponentShipsRemaining == 0) {
+        console.log('Game over! You win!');
+      };
+
     })
     opponentBoard.appendChild(cell);
   }
@@ -137,5 +155,9 @@ const opponentBoardSetup = function() {
   opponentDiv.appendChild(opponentBoard);
 }
 
-playerBoardSetup();
-opponentBoardSetup();
+const setupGame = async function() {
+  await playerBoardSetup();
+  opponentBoardSetup();
+};
+
+setupGame();
