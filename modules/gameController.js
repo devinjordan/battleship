@@ -1,5 +1,6 @@
 import Player from "./player.js";
 
+const infoDiv = document.getElementById('info');
 const playerDiv = document.getElementById('player-board');
 const opponentDiv = document.getElementById('opponent-board');
 
@@ -13,12 +14,18 @@ const playerBoardSetup = async function() {
     let axis = true;
     const axisBtn = document.querySelector('#rotate-axis');
     axisBtn.addEventListener('click', () => {
-      if (axis === true) axis = false;
-      else axis = true;
+      if (axis === true) {
+        axis = false;
+        axisBtn.textContent = 'Vertical';
+      } else {
+        axis = true;
+        axisBtn.textContent = 'Horizontal';
+      }
     });
 
     const prepare = document.createElement('p');
     prepare.textContent = 'Prepare thine self for battle!';
+    infoDiv.appendChild(prepare);
     
 
     let playerShipsDown = 0;
@@ -63,6 +70,13 @@ const playerBoardSetup = async function() {
 };
 
 const opponentBoardSetup = function() {
+  // resetting information area
+  const axisBtn = document.querySelector('#rotate-axis');
+  axisBtn.style.display = 'none';
+
+  infoDiv.innerHTML = '';
+  infoDiv.textContent = 'Attack! If you dare...';
+
   const opponentBoard = document.createElement('div');
   opponentDiv.style.display = 'block';
   
@@ -107,6 +121,7 @@ const opponentBoardSetup = function() {
   for (let i = 0; i < opponent.board.board.length; i++) {
     if (i % 10 == 0) {
       const nextLine = document.createElement('div');
+      nextLine.id = 'next-line';
       opponentBoard.appendChild(nextLine);
     };
 
@@ -118,30 +133,75 @@ const opponentBoardSetup = function() {
     cell.addEventListener('click', () => {
       if (opponent.board.hitCell(i)) {
         cell.classList.add('hit');
+        infoDiv.innerHTML = '';
+        infoDiv.textContent = "We've hit something Captain!";
+        const hitShip = opponent.ships.find(ship => ship.position.includes(i));
+        const hitsLeft = hitShip.size - hitShip.hits;
+        let sunk = (hitsLeft === 0) ? true : false;
+        if (sunk) {
+          infoDiv.innerHTML = '';
+          infoDiv.textContent = `We've sunk their ${hitShip.name}!`;
+          if (checkGameOver()) return true;
+        }
       } else {
         cell.classList.add('miss');
+        infoDiv.innerHTML = '';
+        infoDiv.textContent = "We've missed Captain...";
       }
+      cell.disabled = true;
 
       // opponents turn
       // Optional TODO: Add logic to the opponent's selections
-      let randomCell;
+      setTimeout(() => {
+        let randomCell;
+        do {
+          randomCell = Math.floor(Math.random() * 100);
+        } while (player.board.board[randomCell].beenHit);
+        if (player.board.hitCell(randomCell)) {
+          playerDiv.querySelector(`.cell[data-index='${randomCell}']`).classList.add('hit');
+          const hitShip = player.ships.find(ship => ship.position.includes(randomCell));
+          const hitsLeft = hitShip.size - hitShip.hits;
+          let sunk = (hitsLeft === 0) ? true : false;
+          if (sunk) {
+            infoDiv.innerHTML = '';
+            infoDiv.textContent = `Our ${hitShip.name} has been sunk!`;
+            if (checkGameOver()) return;
+          } else {
+            infoDiv.textContent = `Our ${hitShip.name} has been hit!`;
+          }
+        } else {
+          playerDiv.querySelector(`.cell[data-index='${randomCell}']`).classList.add('miss');
+          infoDiv.textContent = 'Whew! That was close!';
+        };
+        
+      }, 1000);
 
-      do {
-        randomCell = Math.floor(Math.random() * 100);
-      } while (player.board.board[randomCell].beenHit);
-
-      if (player.board.hitCell(randomCell)) {
-        playerDiv.querySelector(`.cell[data-index='${randomCell}']`).classList.add('hit');
-      } else {
-        playerDiv.querySelector(`.cell[data-index='${randomCell}']`).classList.add('miss');
-      };
-      
-      // TODO: check if game is over
-      if (player.ships.every(ship => ship.sunk)) {
-        console.log('Game over!');
+      function checkGameOver() {
+        if (player.board.allShipsSunk(player.ships)) {
+          showModal("You've lost your fleet! Game over.");
+          return true;
+        }
+      if (opponent.board.allShipsSunk(opponent.ships)) {
+          showModal("You sank your opponents fleet! You win!");
+          return true;
+        }
       }
-      if (opponent.ships.every(ship => ship.sunk)) {
-        console.log('You win!');
+      
+      function showModal(message) {
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
+        modal.innerHTML = `
+          <div class="modal-content">
+            <p>${message}</p>
+            <button id="close-modal">Close</button>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      
+        const closeModalButton = document.getElementById('close-modal');
+        closeModalButton.addEventListener('click', () => {
+          document.body.removeChild(modal);
+        });
       }
 
     });
