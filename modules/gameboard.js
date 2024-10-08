@@ -9,14 +9,6 @@ export default class Gameboard {
     this.shipPositions = {};
   }
 
-  static ships = {
-    carrier: new Ship('Carrier', 5),
-    battleship: new Ship('Battleship', 4),
-    destroyer: new Ship('Destroyer', 3),
-    submarine: new Ship('Submarine', 3),
-    patrolBoat: new Ship('Patrol Boat', 2),
-  }
-
   occupiedSpaces = [];
 
   initialize() {

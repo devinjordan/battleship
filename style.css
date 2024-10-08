@@ -1,9 +1,9 @@
-.cell {
+/* .cell {
   margin: 0;
   padding: 0;
   background-color: white;
-  /* height: 5vh;
-  width: 5vh; */
+  height: 5vh;
+  width: 5vh;
 }
 
 .cell:hover {
@@ -40,4 +40,122 @@
 #boards {
   display: flex;
   align-items: center;
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
+
+body {
+  font-family: 'Georgia', serif;
+  background-color: #fdf5e6; /* Parchment-like background */
+  color: #333; /* Dark text color */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header > h1 {
+  font-family: "Pirata One", cursive;
+  font-size: 10vh;
+  margin: 0;
+  padding: 1vh;
+}
+
+#boards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  #boards {
+    flex-direction: row;
+  }
+}
+
+#player-board, #opponent-board {
+  border: 2px solid #8b4513; /* Dark brown border */
+  padding: 10px;
+  background-color: #f5deb3; /* Light wheat background for boards */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#next-line {
+  display: none;
+}
+
+.cell {
+  margin: 0;
+  padding: 0;
+  background-color: #fff8dc; /* Cornsilk background for cells */
+  border: 1px dashed #8b4513; /* Dark brown dashed border for cells */
+  height: 8vw;
+  width: 8vw;
+  max-height: 5vh;
+  max-width: 5vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.cell:hover {
+  background: #f0e68c; /* Khaki background on hover */
+}
+
+.ship {
+  background: #d2b48c; /* Tan background for ships */
+}
+
+.miss {
+  background: #b0c4de; /* Light steel blue for misses */
+}
+
+.hit {
+  background: #cd5c5c; /* Indian red for hits */
+}
+
+.sunk {
+  background: #8b0000; /* Dark red for sunk ships */
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #8b4513; /* Dark brown text color */
+  font-family: 'Pirata One', cursive; /* Decorative font for header */
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  border: none;
+  background-color: #8b4513; /* Dark brown background */
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  font-family: 'Georgia', serif;
+}
+
+button:hover {
+  background-color: #a0522d; /* Sienna background on hover */
+}
+
+#player-board > div, #opponent-board > div {
+  display: grid;
+  grid-template-columns: repeat(10, 5vh);
+  grid-template-rows: repeat(10, 5vh);
+  column-gap: 0;
+  row-gap: 0;
 }

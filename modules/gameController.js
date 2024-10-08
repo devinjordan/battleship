@@ -17,11 +17,16 @@ const playerBoardSetup = async function() {
       else axis = true;
     });
 
+    const prepare = document.createElement('p');
+    prepare.textContent = 'Prepare thine self for battle!';
+    
+
     let playerShipsDown = 0;
 
     for (let i = 0; i < player.board.board.length; i++) {
       if (i % 10 == 0) {
         const nextLine = document.createElement('div');
+        nextLine.id = 'next-line';
         playerBoard.appendChild(nextLine);
       }
       const cell = document.createElement('button');
@@ -59,6 +64,7 @@ const playerBoardSetup = async function() {
 
 const opponentBoardSetup = function() {
   const opponentBoard = document.createElement('div');
+  opponentDiv.style.display = 'block';
   
   let axis = true;
 
@@ -117,6 +123,7 @@ const opponentBoardSetup = function() {
       }
 
       // opponents turn
+      // Optional TODO: Add logic to the opponent's selections
       let randomCell;
 
       do {
@@ -130,6 +137,12 @@ const opponentBoardSetup = function() {
       };
       
       // TODO: check if game is over
+      if (player.ships.every(ship => ship.sunk)) {
+        console.log('Game over!');
+      }
+      if (opponent.ships.every(ship => ship.sunk)) {
+        console.log('You win!');
+      }
 
     });
     opponentBoard.appendChild(cell);
