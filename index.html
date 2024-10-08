@@ -12,14 +12,20 @@
     <h1>Battleship</h1>
   </header>
   <main>
-    <div id="info"></div>
     <div id="controls">
       <button id="rotate-axis">Rotate Axis</button>
     </div>
     <div id="boards">
-      <div id="player-board"></div>
-      <div id="opponent-board" style="display: none;"></div>
+      <div id="player-side">
+        <div id="player-board"></div>
+        <div id="player-info"></div>
+      </div>
+      <div id="opponent-side">
+        <div id="opponent-board" style="display: none;"></div>
+        <div id="opponent-info"></div>
+      </div>
     </div>
+    <div id="info"></div>
   </main>
   <footer>
 

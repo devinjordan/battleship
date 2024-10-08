@@ -42,6 +42,28 @@ const playerBoardSetup = async function() {
       cell.dataset.index = i;
       cell.textContent = i;
 
+      cell.addEventListener('mouseover', handleHoverOn);
+      cell.addEventListener('mouseout', handleHoverOff);
+
+        
+      function handleHoverOn() {
+        if (playerShipsDown >= 5) return;
+        let hoverPosition = player.board.placeShip(false, player.ships[playerShipsDown], i, axis);
+        if (hoverPosition == false) return;
+        else {
+          for (let i = 0; i < hoverPosition.length; i++) {
+            const hoverCell = playerDiv.querySelector(`.cell[data-index='${hoverPosition[i]}']`);
+            hoverCell.classList.add('hover');
+          }
+        }
+      }
+
+      function handleHoverOff() {
+        document.querySelectorAll('.cell').forEach(cell => {
+          cell.classList.remove('hover');
+        });
+      }
+
       cell.addEventListener('click', function handleClick() {
         if (playerShipsDown >= 5) {
           const newBoard = playerBoard.cloneNode(true);
@@ -56,11 +78,17 @@ const playerBoardSetup = async function() {
         playerShipsDown++;
 
         if (playerShipsDown === 5) {
-          resolve();
-          player.ships.forEach(ship => {
-            console.log(ship.name);
-            console.log(ship.position);
+          let cells = document.querySelectorAll('.cell');
+          cells.forEach(cell => {
+            cell.removeEventListener('mouseover', handleHoverOn);
+            cell.removeEventListener('mouseout', handleHoverOff);
           });
+
+          const boards = document.getElementById('boards');
+          boards.classList.add('two-columns');
+
+          resolve();
+          return;
         }
 
         infoDiv.innerHTML = '';
@@ -68,26 +96,11 @@ const playerBoardSetup = async function() {
 
       });
 
-      cell.addEventListener('mouseover', function handleHoverOn() {
-        let hoverPosition = player.board.placeShip(false, player.ships[playerShipsDown], i, axis);
-        if (hoverPosition == false) return;
-        else {
-          for (let i = 0; i < hoverPosition.length; i++) {
-            const hoverCell = playerDiv.querySelector(`.cell[data-index='${hoverPosition[i]}']`);
-            hoverCell.classList.add('hover');
-          }
-        }
-      });
-
-      cell.addEventListener('mouseout', function handleHoverOff() {
-        document.querySelectorAll('.cell').forEach(cell => {
-          cell.classList.remove('hover');
-        });
-      });
       
       // TODO: add hover effect to show ship placement
       playerBoard.appendChild(cell);
     };
+    
     playerDiv.appendChild(playerBoard);
     
   });
@@ -122,23 +135,6 @@ const opponentBoardSetup = function() {
 
   opponent.ships.forEach(ship => {
     opponent.board.occupiedSpaces.push(...ship.position);
-  });
-
-  (function testBoard() {
-    let testSpaces = [];
-    opponent.board.occupiedSpaces.forEach(space => {
-      if (testSpaces.includes(space)) {
-        console.log('duplicate');
-      } else {
-        testSpaces.push(space);
-      }
-    });
-    console.log('no duplicates');  
-  })();
-
-  opponent.ships.forEach(ship => {
-    console.log(ship.name);
-    console.log(ship.position);
   });
 
 

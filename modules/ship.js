@@ -12,14 +12,12 @@ export default class Ship {
       return;
     }
     this.hits++;
-    console.log(`${this.name} has been hit! Total hits: ${this.hits}`);
     this.isSunk();
   }
 
   isSunk() {
     if (this.hits == this.size) {
       this.sunk = true;
-      console.log(`${this.name} has been sunk!`);
     }
     return this.sunk;
   }

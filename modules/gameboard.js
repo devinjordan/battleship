@@ -39,13 +39,11 @@ export default class Gameboard {
     if (xAxis) {
       if (cell % 10 + ship.size > 10) {
         positionArr.push(cell, cell + ship.size);
-        console.log(`Bad ${ship.name} placement. ${positionArr}`);
         return false;
       }
     } else {
       if (Math.floor(cell / 10) + ship.size > 10) {
         positionArr.push(cell, cell + (ship.size - 1) * 10);
-        console.log(`Bad ${ship.name} placement. ${positionArr}`);
         return false;
       }
     }
@@ -55,13 +53,11 @@ export default class Gameboard {
       if (xAxis) {
         if (this.board[cell + i].hasShip) {
           positionArr.push(cell, cell + ship.size);
-          console.log(`Bad ${ship.name} placement. ${positionArr}`);
           return false;
         }
       } else {
         if (this.board[cell + i * 10].hasShip) {
           positionArr.push(cell, cell + (ship.size - 1) * 10);
-          console.log(`Bad ${ship.name} placement. ${positionArr}`);
           return false;
         }
       }
@@ -83,7 +79,6 @@ export default class Gameboard {
         }
       }
     }
-    console.log(`${ship.name} placed at ${positionArr}`);
 
     // do not actually place the ship if just hovering
     if (!execute) {
