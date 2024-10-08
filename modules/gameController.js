@@ -24,7 +24,8 @@ const playerBoardSetup = async function() {
     });
 
     const prepare = document.createElement('p');
-    prepare.textContent = 'Prepare thine self for battle!';
+    prepare.textContent = 'Prepare thine self for battle! \r\n';
+    prepare.textContent += 'Place your Carrier on the board.';
     infoDiv.appendChild(prepare);
     
 
@@ -47,12 +48,13 @@ const playerBoardSetup = async function() {
           playerBoard.parentNode.replaceChild(newBoard, playerBoard);
           return;
         };
-        if (player.board.placeShip(player.ships[playerShipsDown], i, axis) == false) return;
+        if (player.board.placeShip(true, player.ships[playerShipsDown], i, axis) == false) return;
         for (let i = 0; i < player.ships[playerShipsDown].position.length; i++) {
           const shipCell = playerDiv.querySelector(`.cell[data-index='${player.ships[playerShipsDown].position[i]}']`);
           shipCell.classList.add('ship');
         }
         playerShipsDown++;
+
         if (playerShipsDown === 5) {
           resolve();
           player.ships.forEach(ship => {
@@ -60,7 +62,29 @@ const playerBoardSetup = async function() {
             console.log(ship.position);
           });
         }
+
+        infoDiv.innerHTML = '';
+        infoDiv.textContent = `Place your ${player.ships[playerShipsDown].name}...`;
+
       });
+
+      cell.addEventListener('mouseover', function handleHoverOn() {
+        let hoverPosition = player.board.placeShip(false, player.ships[playerShipsDown], i, axis);
+        if (hoverPosition == false) return;
+        else {
+          for (let i = 0; i < hoverPosition.length; i++) {
+            const hoverCell = playerDiv.querySelector(`.cell[data-index='${hoverPosition[i]}']`);
+            hoverCell.classList.add('hover');
+          }
+        }
+      });
+
+      cell.addEventListener('mouseout', function handleHoverOff() {
+        document.querySelectorAll('.cell').forEach(cell => {
+          cell.classList.remove('hover');
+        });
+      });
+      
       // TODO: add hover effect to show ship placement
       playerBoard.appendChild(cell);
     };
@@ -92,7 +116,7 @@ const opponentBoardSetup = function() {
     let placed = false;
     do {
       const position = Math.floor(Math.random() * 100);
-      placed = opponent.board.placeShip(opponent.ships[i], position, axis);
+      placed = opponent.board.placeShip(true, opponent.ships[i], position, axis);
     } while (placed == false);
   };
 

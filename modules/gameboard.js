@@ -32,7 +32,7 @@ export default class Gameboard {
     return false;
   }
 
-  placeShip(ship, cell, xAxis = true) {
+  placeShip(execute, ship, cell, xAxis = true) {
     let positionArr = [];
   
     // Check if the ship can be placed without wrapping around or overflowing
@@ -67,19 +67,28 @@ export default class Gameboard {
       }
     }
   
-    // Place the ship
+    // Mark cells as occupied by the ship
     for (let i = 0; i < ship.size; i++) {
       if (xAxis) {
         positionArr.push(cell + i);
-        this.board[cell + i].hasShip = true;
-        this.shipPositions[cell + i] = ship; // Maps cell to ship
+        if (execute) {
+          this.board[cell + i].hasShip = true;
+          this.shipPositions[cell + i] = ship; // Maps cell to ship
+        }
       } else {
         positionArr.push(cell + i * 10);
-        this.board[cell + i * 10].hasShip = true;
-        this.shipPositions[cell + i * 10] = ship; // Maps cell to ship
+        if (execute) {
+          this.board[cell + i * 10].hasShip = true;
+          this.shipPositions[cell + i * 10] = ship; // Maps cell to ship
+        }
       }
     }
     console.log(`${ship.name} placed at ${positionArr}`);
+
+    // do not actually place the ship if just hovering
+    if (!execute) {
+      return positionArr;
+    }
   
     ship.position = positionArr;
     return true;

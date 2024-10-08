@@ -112,6 +112,10 @@ body {
   background: #f0e68c; /* Khaki background on hover */
 }
 
+#player-board .cell:hover {
+  background: rgba(0, 128, 0, 0.5);
+}
+
 .ship {
   background: #d2b48c; /* Tan background for ships */
 }
@@ -219,4 +223,12 @@ button:hover {
 
 .modal-content button:hover {
   background-color: #a0522d; /* Sienna background on hover */
+}
+
+p {
+  white-space: pre;
+}
+
+.hover {
+  background-color: rgba(0, 128, 0, 0.5); /* Semi-transparent green */
 }
