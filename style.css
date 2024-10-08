@@ -1,47 +1,3 @@
-/* .cell {
-  margin: 0;
-  padding: 0;
-  background-color: white;
-  height: 5vh;
-  width: 5vh;
-}
-
-.cell:hover {
-  background: lightgreen;
-}
-
-.ship::before {
-  background: blue;
-}
-
-.ship {
-  background: gray;
-}
-
-#player-board > div, #opponent-board > div {
-  display: grid;
-  grid-template-columns: repeat(11, 5vh);
-  grid-template-rows: repeat(11, 5vh);
-  column-gap: 0;
-}
-
-.miss {
-  background: lightblue;
-}
-
-.hit {
-  background: red;
-}
-
-.sunk {
-  background: darkred;
-}
-
-#boards {
-  display: flex;
-  align-items: center;
-} */
-
 @import url('https://fonts.googleapis.com/css2?family=Pirata+One&display=swap');
 
 body {
@@ -57,13 +13,6 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
-
-/* header > h1 {
-  font-family: "Pirata One", cursive;
-  font-size: 10vh;
-  margin: 0;
-  padding: 1vh;
-} */
 
 #boards {
   display: flex;
@@ -143,6 +92,16 @@ h1 {
   font-family: 'Pirata One', cursive; /* Decorative font for header */
   padding: 1vh;
   margin: 0;
+}
+
+h2 {
+  text-align: center;
+  font-size: 3vh;
+  color: #8b4513; /* Dark brown text color */
+  font-family: 'Georgia', serif;
+  padding: 1vh;
+  margin: 0;
+  font-weight: 100;
 }
 
 #info {
@@ -235,4 +194,11 @@ p {
 
 .hover {
   background-color: rgba(0, 128, 0, 0.5); /* Semi-transparent green */
+}
+
+#boards > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2vh;
 }

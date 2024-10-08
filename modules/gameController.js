@@ -1,6 +1,13 @@
 import Player from "./player.js";
 
 const infoDiv = document.getElementById('info');
+
+const playerInfoDiv = document.getElementById('player-info');
+const playerInfo = document.createElement('p');
+playerInfoDiv.appendChild(playerInfo);
+const opponentInfoDiv = document.getElementById('opponent-info');
+const opponentInfo = document.createElement('p');
+opponentInfoDiv.appendChild(opponentInfo);
 const playerDiv = document.getElementById('player-board');
 const opponentDiv = document.getElementById('opponent-board');
 
@@ -40,7 +47,6 @@ const playerBoardSetup = async function() {
       const cell = document.createElement('button');
       cell.classList.add('cell');
       cell.dataset.index = i;
-      cell.textContent = i;
 
       cell.addEventListener('mouseover', handleHoverOn);
       cell.addEventListener('mouseout', handleHoverOff);
@@ -86,7 +92,7 @@ const playerBoardSetup = async function() {
 
           const boards = document.getElementById('boards');
           boards.classList.add('two-columns');
-
+          infoDiv.innerHTML = '';
           resolve();
           return;
         }
@@ -97,12 +103,10 @@ const playerBoardSetup = async function() {
       });
 
       
-      // TODO: add hover effect to show ship placement
       playerBoard.appendChild(cell);
     };
-    
-    playerDiv.appendChild(playerBoard);
-    
+
+    playerDiv.appendChild(playerBoard);    
   });
 };
 
@@ -111,8 +115,7 @@ const opponentBoardSetup = function() {
   const axisBtn = document.querySelector('#rotate-axis');
   axisBtn.style.display = 'none';
 
-  infoDiv.innerHTML = '';
-  infoDiv.textContent = 'Attack! If you dare...';
+  opponentInfo.textContent = 'Fire away Captain!';
 
   const opponentBoard = document.createElement('div');
   opponentDiv.style.display = 'block';
@@ -146,27 +149,26 @@ const opponentBoardSetup = function() {
     };
 
     const cell = document.createElement('button');
-    cell.textContent = i;
     cell.classList.add('cell');
     cell.dataset.index = i;
 
     cell.addEventListener('click', () => {
-      if (opponent.board.hitCell(i)) {
+      if (opponent.board.hitCell(i)) {playerInfo
         cell.classList.add('hit');
-        infoDiv.innerHTML = '';
-        infoDiv.textContent = "We've hit something Captain!";
+        opponentInfo.innerHTML = '';
+        opponentInfo.textContent = "We've hit something Captain!";
         const hitShip = opponent.ships.find(ship => ship.position.includes(i));
         const hitsLeft = hitShip.size - hitShip.hits;
         let sunk = (hitsLeft === 0) ? true : false;
         if (sunk) {
-          infoDiv.innerHTML = '';
-          infoDiv.textContent = `We've sunk their ${hitShip.name}!`;
+          opponentInfo.innerHTML = '';
+          opponentInfo.textContent = `We've sunk their ${hitShip.name}!`;
           if (checkGameOver()) return true;
         }
       } else {
         cell.classList.add('miss');
-        infoDiv.innerHTML = '';
-        infoDiv.textContent = "We've missed Captain...";
+        opponentInfo.innerHTML = '';
+        opponentInfo.textContent = "We've missed Captain...";
       }
       cell.disabled = true;
 
@@ -183,15 +185,15 @@ const opponentBoardSetup = function() {
           const hitsLeft = hitShip.size - hitShip.hits;
           let sunk = (hitsLeft === 0) ? true : false;
           if (sunk) {
-            infoDiv.innerHTML = '';
-            infoDiv.textContent = `Our ${hitShip.name} has been sunk!`;
+            playerInfo.innerHTML = '';
+            playerInfo.textContent = `Our ${hitShip.name} has been sunk!`;
             if (checkGameOver()) return;
           } else {
-            infoDiv.textContent = `Our ${hitShip.name} has been hit!`;
+            playerInfo.textContent = `Our ${hitShip.name} has been hit!`;
           }
         } else {
           playerDiv.querySelector(`.cell[data-index='${randomCell}']`).classList.add('miss');
-          infoDiv.textContent = 'Whew! That was close!';
+          playerInfo.textContent = 'Whew! That was close!';
         };
         
       }, 1000);
@@ -227,7 +229,10 @@ const opponentBoardSetup = function() {
     });
     opponentBoard.appendChild(cell);
   }
-
+  const boardTitles = document.querySelectorAll('h2');
+  boardTitles.forEach(title => {
+    title.style.display = 'flex';
+  });
   opponentDiv.appendChild(opponentBoard);
 }
 
