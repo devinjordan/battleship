@@ -18,6 +18,7 @@ Lastly, this project was done over the course of about three months. Perhaps thi
 
 I'd like to revisit this to add these in the following order:
 
+- Better status updates.
 - A replay button on the final modal.
 - Logic from the AI where it can follow hits to the conclusion of sinking a ship
 - Additional shot types, such as an "air strike" where either combatant may select a row to shoot in, or a "depth charge" (or something like that) where a combatant can attack a cell and all surrounding cells.
